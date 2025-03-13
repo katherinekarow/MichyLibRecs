@@ -27,7 +27,8 @@ jobs:
         env:
           GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
         run: |
-          echo "$GOOGLE_CREDENTIALS" > service_account.json
+          echo '${{ secrets.GOOGLE_CREDENTIALS }}' > service_account.json
+          cat service_account.json
 
       - name: Run GLRECS Bot
         env:
