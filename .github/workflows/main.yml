@@ -25,10 +25,10 @@ jobs:
 
       - name: Set Up Google Credentials
         env:
-          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+          GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
         run: |
-          echo '${{ secrets.GOOGLE_CREDENTIALS }}' > service_account.json
-          cat service_account.json
+          echo '${{ secrets.GOOGLE_CREDENTIALS_JSON }}' > service_account.json
+          cat service_account.json  # Optional: Check if the content is correct
 
       - name: Run GLRECS Bot
         env:
@@ -41,4 +41,4 @@ jobs:
         run: python GLRECS-BOT/GLRECS.py
 
       - name: Cleanup
-        run: rm -f service_account.json
+        run: rm -f service_account.json  # Clean up the service account file
