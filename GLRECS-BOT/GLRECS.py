@@ -6,7 +6,6 @@ from datetime import datetime
 import pytz
 from dotenv import load_dotenv
 import io
-import shutil  # To delete the temp folder later
 
 # Google API imports
 from googleapiclient.discovery import build
@@ -27,9 +26,9 @@ print(f"CONSUMER_SECRET: {CONSUMER_SECRET}")
 print(f"ACCESS_KEY: {ACCESS_KEY}")
 print(f"ACCESS_SECRET: {ACCESS_SECRET}")
 
-# Google Drive configuration
-DRIVE_FOLDER_ID = os.getenv('DRIVE_FOLDER_ID')  # Google Drive folder ID
-SERVICE_ACCOUNT_FILE = os.getenv('SERVICE_ACCOUNT_FILE')  # Path to service account JSON file
+# Google Drive configuration (same for both GLRECS and MichyLibRecs)
+DRIVE_FOLDER_ID = os.getenv('DRIVE_FOLDER_ID')  # e.g., "1Aj6tq5f0emeDVfEfuRsfXaT-YjTAFA1i"
+SERVICE_ACCOUNT_FILE = os.getenv('SERVICE_ACCOUNT_FILE')  # e.g., "./credentials.json"
 SCOPES = ['https://www.googleapis.com/auth/drive']
 
 # Debug: Print Google Drive configuration
@@ -63,10 +62,10 @@ except Exception as e:
 
 # --- Configuration ---
 # Local temporary directory to download the Drive folder contents
-local_base_folder = './GLRECS-BOT/GLRECS_temp'
+local_base_folder = './MichyLibRecs_temp'  # Changed to match your new repo structure
 # Supported image formats
 supported_formats = ('.jpg', '.jpeg', '.png', '.webp', '.gif')
-# Supported description file extensions
+# Supported description file extensions (added .doc and .docx)
 supported_text_extensions = ('.txt', '.rtf', '.doc', '.docx')
 
 # Miami timezone
@@ -184,7 +183,7 @@ def tweet_images_from_folder(folder_path):
 
     if media_ids:
         try:
-            tweet_text = "˚ʚ♡ɞ˚ daily recommendation ˚ʚ♡ɞ˚"
+            tweet_text = "˚ʚ♡ɞ˚ ❤︎ daily recommendations ❤︎ ˚ʚ♡ɞ˚"
             response = client_v2.create_tweet(text=tweet_text, media_ids=media_ids)
             client_v2.create_tweet(text=full_text, in_reply_to_tweet_id=response.data['id'])
             current_time = datetime.now(miami_tz).strftime('%Y-%m-%d %I:%M %p')
@@ -195,14 +194,36 @@ def tweet_images_from_folder(folder_path):
 
     return True
 
+def tweet_random_images():
+    """
+    Randomly selects a series folder from the Google Drive folder (GLRECS),
+    downloads its contents to a temporary local folder, and tweets an image.
+    """
+    if not DRIVE_FOLDER_ID:
+        print("No DRIVE_FOLDER_ID provided.")
+        return
+
+    drive_folders = list_drive_folders(DRIVE_FOLDER_ID)
+    if not drive_folders:
+        print("No eligible folders found on Google Drive.")
+        return
+
+    # Shuffle folders multiple times for extra randomness
+    for _ in range(3):
+        random.shuffle(drive_folders)
+
+    for folder in drive_folders:
+        print(f"Selected Drive folder: {folder['name']} (ID: {folder['id']})")
+        local_folder = os.path.join(local_base_folder, folder['name'])
+        download_drive_folder(folder['id'], local_folder)
+        success = tweet_images_from_folder(local_folder)
+        if success:
+            break
+        else:
+            print("Retrying with another folder...")
+
 def main():
-    # Create the temp folder if it doesn't exist
-    os.makedirs(local_base_folder, exist_ok=True)
-
-    tweet_images_from_folder(local_base_folder)
-
-    # Optional: Cleanup after script finishes
-    shutil.rmtree(local_base_folder)
+    tweet_random_images()
 
 if __name__ == "__main__":
     main()
