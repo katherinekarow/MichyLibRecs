@@ -27,8 +27,8 @@ print(f"ACCESS_KEY: {ACCESS_KEY}")
 print(f"ACCESS_SECRET: {ACCESS_SECRET}")
 
 # Google Drive configuration
-DRIVE_FOLDER_ID = os.getenv('DRIVE_FOLDER_ID')  # e.g., "1Aj6tq5f0emeDVfEfuRsfXaT-YjTAFA1i"
-SERVICE_ACCOUNT_FILE = os.getenv('SERVICE_ACCOUNT_FILE')  # e.g., "./credentials.json"
+DRIVE_FOLDER_ID = os.getenv('DRIVE_FOLDER_ID')  # Google Drive folder ID
+SERVICE_ACCOUNT_FILE = os.getenv('SERVICE_ACCOUNT_FILE')  # Path to service account JSON file
 SCOPES = ['https://www.googleapis.com/auth/drive']
 
 # Debug: Print Google Drive configuration
@@ -62,10 +62,10 @@ except Exception as e:
 
 # --- Configuration ---
 # Local temporary directory to download the Drive folder contents
-local_base_folder = './GLRECS_temp'
+local_base_folder = './GLRECS-BOT/GLRECS_temp'
 # Supported image formats
 supported_formats = ('.jpg', '.jpeg', '.png', '.webp', '.gif')
-# Supported description file extensions (added .doc and .docx)
+# Supported description file extensions
 supported_text_extensions = ('.txt', '.rtf', '.doc', '.docx')
 
 # Miami timezone
@@ -194,36 +194,8 @@ def tweet_images_from_folder(folder_path):
 
     return True
 
-def tweet_random_images():
-    """
-    Randomly selects a series folder from the Google Drive folder (GLRECS),
-    downloads its contents to a temporary local folder, and tweets an image.
-    """
-    if not DRIVE_FOLDER_ID:
-        print("No DRIVE_FOLDER_ID provided.")
-        return
-
-    drive_folders = list_drive_folders(DRIVE_FOLDER_ID)
-    if not drive_folders:
-        print("No eligible folders found on Google Drive.")
-        return
-
-    # Shuffle folders multiple times for extra randomness
-    for _ in range(3):
-        random.shuffle(drive_folders)
-
-    for folder in drive_folders:
-        print(f"Selected Drive folder: {folder['name']} (ID: {folder['id']})")
-        local_folder = os.path.join(local_base_folder, folder['name'])
-        download_drive_folder(folder['id'], local_folder)
-        success = tweet_images_from_folder(local_folder)
-        if success:
-            break
-        else:
-            print("Retrying with another folder...")
-
 def main():
-    tweet_random_images()
+    tweet_images_from_folder(local_base_folder)
 
 if __name__ == "__main__":
     main()
