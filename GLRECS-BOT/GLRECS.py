@@ -183,7 +183,7 @@ def tweet_images_from_folder(folder_path):
 
     if media_ids:
         try:
-            tweet_text = "˚ʚ♡ɞ˚ ❤︎ daily recommendations ❤︎ ˚ʚ♡ɞ˚"
+            tweet_text = "˚ʚ♡ɞ˚ daily recommendations ˚ʚ♡ɞ˚"
             response = client_v2.create_tweet(text=tweet_text, media_ids=media_ids)
             client_v2.create_tweet(text=full_text, in_reply_to_tweet_id=response.data['id'])
             current_time = datetime.now(miami_tz).strftime('%Y-%m-%d %I:%M %p')
