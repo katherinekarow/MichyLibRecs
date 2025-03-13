@@ -6,6 +6,7 @@ from datetime import datetime
 import pytz
 from dotenv import load_dotenv
 import io
+import shutil  # To delete the temp folder later
 
 # Google API imports
 from googleapiclient.discovery import build
@@ -195,7 +196,13 @@ def tweet_images_from_folder(folder_path):
     return True
 
 def main():
+    # Create the temp folder if it doesn't exist
+    os.makedirs(local_base_folder, exist_ok=True)
+
     tweet_images_from_folder(local_base_folder)
+
+    # Optional: Cleanup after script finishes
+    shutil.rmtree(local_base_folder)
 
 if __name__ == "__main__":
     main()
