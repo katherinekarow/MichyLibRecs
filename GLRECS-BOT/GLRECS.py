@@ -74,18 +74,49 @@ miami_tz = pytz.timezone('America/New_York')
 # --- Google Drive Helper Functions ---
 
 def list_drive_folders(parent_id):
-    """Lists subfolders in the given Google Drive folder."""
-    query = f"'{parent_id}' in parents and mimeType='application/vnd.google-apps.folder' and trashed=false"
-    results = drive_service.files().list(q=query, fields="files(id, name)").execute()
-    print(f"Found {len(results.get('files', []))} folders in Drive.")
-    return results.get('files', [])
+    """Lists subfolders in the given Google Drive folder, handling pagination."""
+    folders = []
+    page_token = None
+
+    while True:
+        query = f"'{parent_id}' in parents and mimeType='application/vnd.google-apps.folder' and trashed=false"
+        results = drive_service.files().list(
+            q=query,
+            fields="files(id, name), nextPageToken",
+            pageToken=page_token
+        ).execute()
+
+        folders.extend(results.get('files', []))  # Add the folders to the list
+        page_token = results.get('nextPageToken')  # Get the next page token
+
+        if not page_token:  # If there's no next page, break the loop
+            break
+
+    print(f"Found {len(folders)} folders in Drive.")
+    return folders
 
 def list_drive_files(folder_id):
-    """Lists files in a given Google Drive folder."""
-    query = f"'{folder_id}' in parents and trashed=false"
-    results = drive_service.files().list(q=query, fields="files(id, name, mimeType)").execute()
-    print(f"Found {len(results.get('files', []))} files in folder {folder_id}.")
-    return results.get('files', [])
+    """Lists files in a given Google Drive folder, handling pagination."""
+    files = []
+    page_token = None
+
+    while True:
+        query = f"'{folder_id}' in parents and trashed=false"
+        results = drive_service.files().list(
+            q=query,
+            fields="files(id, name, mimeType), nextPageToken",
+            pageToken=page_token
+        ).execute()
+
+        files.extend(results.get('files', []))  # Add the files to the list
+        page_token = results.get('nextPageToken')  # Get the next page token
+
+        if not page_token:  # If there's no next page, break the loop
+            break
+
+    print(f"Found {len(files)} files in folder {folder_id}.")
+    return files
+
 
 def download_file_from_drive(file_id, destination_path):
     """Downloads a file from Google Drive to a local destination."""
