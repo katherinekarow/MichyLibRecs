@@ -63,10 +63,17 @@ except Exception as e:
 # --- Configuration ---
 # Local temporary directory to download the Drive folder contents
 local_base_folder = './MichyLibRecs_temp'  # Changed to match your new repo structure
-# Supported image formats
-supported_formats = ('.jpg', '.jpeg', '.png', '.webp', '.gif')
-# Supported description file extensions (added .doc and .docx)
-supported_text_extensions = ('.txt', '.rtf', '.doc', '.docx')
+supported_formats = (
+    '.jpg', '.jpeg', '.png', '.webp', '.gif', '.bmp',
+    '.tiff', '.svg', '.heif', '.ico', '.raw', '.jfif',
+    '.exif', '.dng', '.weep', '.mp4', '.avi', '.mov', '.wmv',
+    '.mkv', '.flv', '.webm', '.gifv',
+    '.mp3', '.wav', '.aac', '.ogg'
+)
+supported_text_extensions = (
+    '.txt', '.rtf', '.doc', '.docx', '.pdf', '.odt', '.markdown',
+    '.csv', '.html', '.xml', '.json'
+)
 
 # Miami timezone
 miami_tz = pytz.timezone('America/New_York')
