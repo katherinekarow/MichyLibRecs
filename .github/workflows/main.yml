@@ -8,6 +8,7 @@ on:
 jobs:
   run-glrecs-bot:
     runs-on: ubuntu-latest
+    timeout-minutes: 10  # Ensures the job stops after 10 min
 
     steps:
       - name: Checkout Repository
@@ -28,7 +29,6 @@ jobs:
           GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
         run: |
           echo '${{ secrets.GOOGLE_CREDENTIALS_JSON }}' > service_account.json
-          cat service_account.json  # Optional: Check if the content is correct
 
       - name: Run GLRECS Bot
         env:
@@ -40,5 +40,6 @@ jobs:
           SERVICE_ACCOUNT_FILE: service_account.json
         run: python GLRECS-BOT/GLRECS.py
 
-      - name: Cleanup
-        run: rm -f service_account.json  # Clean up the service account file
+      - name: Cleanup (Always Runs)
+        if: always()  # Ensures cleanup happens even if job fails
+        run: rm -f service_account.json
