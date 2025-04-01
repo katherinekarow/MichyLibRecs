@@ -1,45 +1,45 @@
-name: Run GLRECS Bot Every 2 Hours
+##name: Run GLRECS Bot Every 2 Hours
 
-on:
-  schedule:
-    - cron: "0 */2 * * *"  # Runs every 2 hours
-  workflow_dispatch:  # Allows manual triggering
+#on:
+#  schedule:
+#    - cron: "0 */2 * * *"  # Runs every 2 hours
+#  workflow_dispatch:  # Allows manual triggering
 
-jobs:
-  run-glrecs-bot:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10  # Ensures the job stops after 10 min
+#jobs:
+#  run-glrecs-bot:
+#    runs-on: ubuntu-latest
+#    timeout-minutes: 10  # Ensures the job stops after 10 min
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+#    steps:
+#      - name: Checkout Repository
+#        uses: actions/checkout@v4
 
-      - name: Set Up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
+#      - name: Set Up Python
+#        uses: actions/setup-python@v4
+#        with:
+#          python-version: '3.10'
 
-      - name: Install Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+#      - name: Install Dependencies
+#        run: |
+#          python -m pip install --upgrade pip
+#          pip install -r requirements.txt
 
-      - name: Set Up Google Credentials
-        env:
-          GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
-        run: |
-          echo '${{ secrets.GOOGLE_CREDENTIALS_JSON }}' > service_account.json
+#      - name: Set Up Google Credentials
+#        env:
+#          GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
+#        run: |
+#          echo '${{ secrets.GOOGLE_CREDENTIALS_JSON }}' > service_account.json
 
-      - name: Run GLRECS Bot
-        env:
-          CONSUMER_KEY: ${{ secrets.CONSUMER_KEY }}
-          CONSUMER_SECRET: ${{ secrets.CONSUMER_SECRET }}
-          ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
-          ACCESS_SECRET: ${{ secrets.ACCESS_SECRET }}
-          DRIVE_FOLDER_ID: ${{ secrets.DRIVE_FOLDER_ID }}
-          SERVICE_ACCOUNT_FILE: service_account.json
-        run: python GLRECS-BOT/GLRECS.py
+#      - name: Run GLRECS Bot
+#        env:
+#          CONSUMER_KEY: ${{ secrets.CONSUMER_KEY }}
+#          CONSUMER_SECRET: ${{ secrets.CONSUMER_SECRET }}
+#          ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
+#          ACCESS_SECRET: ${{ secrets.ACCESS_SECRET }}
+#          DRIVE_FOLDER_ID: ${{ secrets.DRIVE_FOLDER_ID }}
+#          SERVICE_ACCOUNT_FILE: service_account.json
+#        run: python GLRECS-BOT/GLRECS.py
 
-      - name: Cleanup (Always Runs)
-        if: always()  # Ensures cleanup happens even if job fails
-        run: rm -f service_account.json
+#      - name: Cleanup (Always Runs)
+#        if: always()  # Ensures cleanup happens even if job fails
+#        run: rm -f service_account.json
