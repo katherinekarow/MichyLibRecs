@@ -26,9 +26,9 @@ print(f"CONSUMER_SECRET: {CONSUMER_SECRET}")
 print(f"ACCESS_KEY: {ACCESS_KEY}")
 print(f"ACCESS_SECRET: {ACCESS_SECRET}")
 
-# Google Drive configuration (same for both GLRECS and MichyLibRecs)
-DRIVE_FOLDER_ID = os.getenv('DRIVE_FOLDER_ID')  # e.g., "1Aj6tq5f0emeDVfEfuRsfXaT-YjTAFA1i"
-SERVICE_ACCOUNT_FILE = os.getenv('SERVICE_ACCOUNT_FILE')  # e.g., "./credentials.json"
+# Google Drive configuration 
+DRIVE_FOLDER_ID = os.getenv('DRIVE_FOLDER_ID')  
+SERVICE_ACCOUNT_FILE = os.getenv('SERVICE_ACCOUNT_FILE')  
 SCOPES = ['https://www.googleapis.com/auth/drive']
 
 # Debug: Print Google Drive configuration
@@ -62,7 +62,7 @@ except Exception as e:
 
 # --- Configuration ---
 # Local temporary directory to download the Drive folder contents
-local_base_folder = './MichyLibRecs_temp'  # Changed to match your new repo structure
+local_base_folder = './MichyLibRecs_temp'
 supported_formats = (
     '.jpg', '.jpeg', '.png', '.webp', '.gif', '.bmp',
     '.tiff', '.svg', '.heif', '.ico', '.raw', '.jfif',
@@ -194,7 +194,7 @@ def tweet_images_from_folder(folder_path):
         print(f"No images or description file found in folder: {folder_path}")
         return False
 
-    # Shuffle images multiple times for randomness
+    # Shuffle images multiple times for randomness praying it shuffles thru
     for _ in range(3):
         random.shuffle(images)
     selected_image = images[0]
@@ -246,7 +246,7 @@ def tweet_random_images():
         print("No eligible folders found on Google Drive.")
         return
 
-    # Shuffle folders multiple times for extra randomness
+    # Shuffle folders multiple times for extra randomness & pray it works this time
     for _ in range(3):
         random.shuffle(drive_folders)
 
