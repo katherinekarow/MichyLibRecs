@@ -1,9 +1,9 @@
 ##name: Run GLRECS Bot Every 2 Hours
 
-on:
-  schedule:
-    - cron: "0 */2 * * *"  # Runs every 2 hours
-  workflow_dispatch:  # Allows manual triggering
+# on:
+#   schedule:
+#     - cron: "0 */2 * * *"  # Runs every 2 hours
+#   workflow_dispatch:  # Allows manual triggering
 
 jobs:
   run-glrecs-bot:
